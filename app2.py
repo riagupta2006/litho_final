@@ -222,44 +222,44 @@ with tab_simulation:
                     base_profile[(x > i) & (x < i + 0.6)] = 1.0
 
 # --------- SCAN MODE DIFFERENCE ---------
-if scan_mode == "Vector Scan":
-    # Sharp pattern (direct writing)
-    exposure_profile = base_profile.copy()
+            if scan_mode == "Vector Scan":
+            # Sharp pattern (direct writing)
+            exposure_profile = base_profile.copy()
 
-elif scan_mode == "Raster Scan":
-    # Line-by-line scanning effect
-    raster_profile = np.zeros_like(x)
-    scan_lines = 40
+            elif scan_mode == "Raster Scan":
+            # Line-by-line scanning effect
+            raster_profile = np.zeros_like(x)
+            scan_lines = 40
 
-    for i in range(scan_lines):
-        shift = int(i * len(x) / scan_lines)
-        shifted = np.roll(base_profile, shift)
+            for i in range(scan_lines):
+                shift = int(i * len(x) / scan_lines)
+                shifted = np.roll(base_profile, shift)
 
-        # simulate overlap (blur)
-        blur = np.convolve(shifted, np.ones(8)/8, mode='same')
-        raster_profile += blur
+                # simulate overlap (blur)
+                blur = np.convolve(shifted, np.ones(8)/8, mode='same')
+                raster_profile += blur
 
-    # normalize
-    exposure_profile = raster_profile / np.max(raster_profile)
+            # normalize
+            exposure_profile = raster_profile / np.max(raster_profile)
 
-    # add slight background exposure
-    exposure_profile += 0.1
-    exposure_profile = np.clip(exposure_profile, 0, 1)
+            # add slight background exposure
+            exposure_profile += 0.1
+            exposure_profile = np.clip(exposure_profile, 0, 1)
 
 # --------- DEFOCUS EFFECT ---------
-blur_amount = abs(defocus)
-if blur_amount > 0:
-    window_size = int(blur_amount * 2.5)
-    if window_size > 0:
-        window = np.ones(window_size) / window_size
-        exposure_profile = np.convolve(exposure_profile, window, mode='same')
+            blur_amount = abs(defocus)
+            if blur_amount > 0:
+            window_size = int(blur_amount * 2.5)
+            if window_size > 0:
+                window = np.ones(window_size) / window_size
+                exposure_profile = np.convolve(exposure_profile, window, mode='same')
 
-st.session_state.received_dose = exposure_profile * dose
+        st.session_state.received_dose = exposure_profile * dose
             
-col1, col2, col3 = st.columns(3)
-col1.metric("Operating Mode", scan_mode)
-col2.metric("Laser Dose", f"{dose} mJ/cm²")
-col3.metric("Defocus Offset", f"{defocus} µm")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Operating Mode", scan_mode)
+        col2.metric("Laser Dose", f"{dose} mJ/cm²")
+        col3.metric("Defocus Offset", f"{defocus} µm")
 
 st.markdown("---")
 fig, ax = plt.subplots(figsize=(10, 4))
