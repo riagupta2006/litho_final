@@ -287,6 +287,9 @@ else:
 
         st.pyplot(fig)
 
+
+
+
     # --- Step 4 Logic ---
 elif step == "4. Development":
         st.header("Step 4: Photoresist Development")
