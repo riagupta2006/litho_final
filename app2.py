@@ -256,29 +256,29 @@ if blur_amount > 0:
 
 st.session_state.received_dose = exposure_profile * dose
             
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Operating Mode", scan_mode)
-    col2.metric("Laser Dose", f"{dose} mJ/cm²")
-    col3.metric("Defocus Offset", f"{defocus} µm")
+col1, col2, col3 = st.columns(3)
+col1.metric("Operating Mode", scan_mode)
+col2.metric("Laser Dose", f"{dose} mJ/cm²")
+col3.metric("Defocus Offset", f"{defocus} µm")
 
-    st.markdown("---")
-    fig, ax = plt.subplots(figsize=(10, 4))
-    baked_thickness = st.session_state.current_thickness * 0.90 
+st.markdown("---")
+fig, ax = plt.subplots(figsize=(10, 4))
+baked_thickness = st.session_state.current_thickness * 0.90 
             
-    ax.fill_between(x, 0, -2, color='#A9A9A9', label='Silicon Substrate')
-    ax.fill_between(x, 0, baked_thickness, color='#FF0000', alpha=0.8, label='Unexposed AZ 1505')
+ax.fill_between(x, 0, -2, color='#A9A9A9', label='Silicon Substrate')
+ax.fill_between(x, 0, baked_thickness, color='#FF0000', alpha=0.8, label='Unexposed AZ 1505')
             
-    exposed_thickness = np.where(exposure_profile > 0.05, baked_thickness, 0)
-    ax.fill_between(x, 0, exposed_thickness, color='#FFFF00', alpha=np.clip(exposure_profile, 0, 1), label='Reacted AZ 1505')
+exposed_thickness = np.where(exposure_profile > 0.05, baked_thickness, 0)
+ax.fill_between(x, 0, exposed_thickness, color='#FFFF00', alpha=np.clip(exposure_profile, 0, 1), label='Reacted AZ 1505')
             
-    ax.plot(x, exposure_profile * (baked_thickness + 1.0), color='blue', linestyle='-', linewidth=2, label='365nm Laser Profile')
+ax.plot(x, exposure_profile * (baked_thickness + 1.0), color='blue', linestyle='-', linewidth=2, label='365nm Laser Profile')
             
-    ax.set_ylim(-2.5, 5.0) 
-    ax.set_xlim(0, 10)
-    ax.set_ylabel("Thickness / Intensity")
-    ax.set_xticks([])
-    ax.legend(loc="upper right", fontsize='small')
-    ax.grid(True, axis='y', linestyle='--', alpha=0.5)
+ax.set_ylim(-2.5, 5.0) 
+ax.set_xlim(0, 10)
+ax.set_ylabel("Thickness / Intensity")
+ax.set_xticks([])
+ax.legend(loc="upper right", fontsize='small')
+ax.grid(True, axis='y', linestyle='--', alpha=0.5)
      
         if scan_mode == "Vector Scan":
     ax.set_title("Vector Scan: Sharp Pattern")
