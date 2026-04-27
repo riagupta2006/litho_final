@@ -221,16 +221,38 @@ with tab_simulation:
                 for i in np.arange(1, 10, 1.5):
                     base_profile[(x > i) & (x < i + 0.6)] = 1.0
 
-            blur_amount = abs(defocus) 
-            if blur_amount > 0:
-                window_size = int(blur_amount * 2.5) 
-                if window_size > 0:
-                    window = np.ones(window_size) / window_size
-                    exposure_profile = np.convolve(base_profile, window, mode='same')
-                    peak_reduction = max(0.2, 1.0 - (blur_amount * 0.03))
-                    exposure_profile = exposure_profile * peak_reduction
-            else:
-                exposure_profile = base_profile
+# --------- SCAN MODE DIFFERENCE ---------
+if scan_mode == "Vector Scan":
+    # Sharp pattern (direct writing)
+    exposure_profile = base_profile.copy()
+
+elif scan_mode == "Raster Scan":
+    # Line-by-line scanning effect
+    raster_profile = np.zeros_like(x)
+    scan_lines = 40
+
+    for i in range(scan_lines):
+        shift = int(i * len(x) / scan_lines)
+        shifted = np.roll(base_profile, shift)
+
+        # simulate overlap (blur)
+        blur = np.convolve(shifted, np.ones(8)/8, mode='same')
+        raster_profile += blur
+
+    # normalize
+    exposure_profile = raster_profile / np.max(raster_profile)
+
+    # add slight background exposure
+    exposure_profile += 0.1
+    exposure_profile = np.clip(exposure_profile, 0, 1)
+
+# --------- DEFOCUS EFFECT ---------
+blur_amount = abs(defocus)
+if blur_amount > 0:
+    window_size = int(blur_amount * 2.5)
+    if window_size > 0:
+        window = np.ones(window_size) / window_size
+        exposure_profile = np.convolve(exposure_profile, window, mode='same')
 
             st.session_state.received_dose = exposure_profile * dose
             
@@ -257,6 +279,12 @@ with tab_simulation:
             ax.set_xticks([])
             ax.legend(loc="upper right", fontsize='small')
             ax.grid(True, axis='y', linestyle='--', alpha=0.5)
+     
+        if scan_mode == "Vector Scan":
+    ax.set_title("Vector Scan: Sharp Pattern")
+else:
+    ax.set_title("Raster Scan: Blurred + Overlapping Pattern")
+
             st.pyplot(fig)
 
     # --- Step 4 Logic ---
