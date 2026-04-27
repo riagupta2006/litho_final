@@ -281,16 +281,16 @@ ax.legend(loc="upper right", fontsize='small')
 ax.grid(True, axis='y', linestyle='--', alpha=0.5)
      
 if scan_mode == "Vector Scan":
-        ax.set_title("Vector Scan: Sharp Pattern")
+    ax.set_title("Vector Scan: Sharp Pattern")
 else:
-        ax.set_title("Raster Scan: Blurred + Overlapping Pattern")
+    ax.set_title("Raster Scan: Blurred + Overlapping Pattern")
 
 st.pyplot(fig)
 
 # --- Step 4 Logic ---
 elif step == "4. Development":
-        st.header("Step 4: Photoresist Development")
-        
+    st.header("Step 4: Photoresist Development")
+
         if 'received_dose' not in st.session_state or np.max(st.session_state.received_dose) == 0:
              st.warning("⚠️ Please execute Step 3 (Maskless Exposure) first!")
         else:
