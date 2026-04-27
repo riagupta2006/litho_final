@@ -254,7 +254,7 @@ if blur_amount > 0:
         window = np.ones(window_size) / window_size
         exposure_profile = np.convolve(exposure_profile, window, mode='same')
 
-            st.session_state.received_dose = exposure_profile * dose
+st.session_state.received_dose = exposure_profile * dose
             
             col1, col2, col3 = st.columns(3)
             col1.metric("Operating Mode", scan_mode)
