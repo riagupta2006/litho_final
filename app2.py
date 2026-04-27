@@ -280,7 +280,7 @@ ax.set_xticks([])
 ax.legend(loc="upper right", fontsize='small')
 ax.grid(True, axis='y', linestyle='--', alpha=0.5)
      
-        if scan_mode == "Vector Scan":
+if scan_mode == "Vector Scan":
     ax.set_title("Vector Scan: Sharp Pattern")
 else:
     ax.set_title("Raster Scan: Blurred + Overlapping Pattern")
