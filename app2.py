@@ -285,7 +285,7 @@ if scan_mode == "Vector Scan":
 else:
         ax.set_title("Raster Scan: Blurred + Overlapping Pattern")
 
-    st.pyplot(fig)
+        st.pyplot(fig)
 
     # --- Step 4 Logic ---
     elif step == "4. Development":
